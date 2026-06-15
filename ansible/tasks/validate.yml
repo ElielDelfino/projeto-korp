@@ -1,0 +1,16 @@
+- name: Wait for HTTP Server to be Available
+  ansible.builtin.uri:
+    url: http://localhost:80/projeto-korp
+    return_content: true
+    status_code: 200
+  register: validation
+  retries: 10
+  delay: 3
+  until: validation.status == 200
+  changed_when: false
+
+- name: Display HTTP Server Response
+  ansible.builtin.debug:
+    msg:
+      - "HTTP Server Response: {{ validation.content }}"
+      - "Status Code: {{ validation.status }}"

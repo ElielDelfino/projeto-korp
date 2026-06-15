@@ -1,0 +1,54 @@
+- name: Create structure of directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ deploy_dir }}"
+    - "{{ deploy_dir }}/app"
+    - "{{ deploy_dir }}/nginx/conf.d"
+    - "{{ deploy_dir }}/prometheus"
+    - "{{ deploy_dir }}/grafana/provisioning/dashboards"
+    - "{{ deploy_dir }}/grafana/provisioning/datasources"
+
+- name: Copy GO and Dockerfile
+  ansible.builtin.copy:
+    src: "{{ repo_local }}/app/"
+    dest: "{{ deploy_dir }}/app/"
+    mode: "0644"
+
+- name: Copy docker-compose
+  ansible.builtin.copy:
+    src: "{{ repo_local }}/docker-compose.yml"
+    dest: "{{ deploy_dir }}/docker-compose.yml"
+    mode: "0644"
+
+- name: Copy Grafana datasource + dashboards
+  ansible.builtin.copy:
+    src: "{{ repo_local }}/grafana/provisioning/"
+    dest: "{{ deploy_dir }}/grafana/provisioning/"
+    mode: "0644"
+
+- name: Config proxy nginx
+  ansible.builtin.template:
+    src: nginx-proxy.conf.j2
+    dest: "{{ deploy_dir }}/nginx/conf.d/http-server-projeto-korp.conf"
+    mode: "0644"
+
+- name: Config Prometheus
+  ansible.builtin.template:
+    src: prometheus.yml.j2
+    dest: "{{ deploy_dir }}/prometheus/prometheus.yml"
+    mode: "0644"
+
+- name: Create .env-prometheus
+  ansible.builtin.template:
+    src: .env-prometheus.j2
+    dest: "{{ deploy_dir }}/.env-prometheus"
+    mode: "0600"
+
+- name: Create .env-grafana
+  ansible.builtin.template:
+    src: .env-grafana.j2
+    dest: "{{ deploy_dir }}/.env-grafana"
+    mode: "0600"

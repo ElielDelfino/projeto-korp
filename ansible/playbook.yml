@@ -1,0 +1,27 @@
+---
+- name: Deploy Projeto Korp
+  hosts: local
+  become: true
+
+  vars:
+    repo_local: "{{ playbook_dir }}/.."
+    deploy_dir: /opt/projeto-korp
+    app_service_name: http-server-projeto-korp
+    app_image: "{{ app_service_name }}:latest"
+    app_port: 8080
+    nginx_host_port: 80
+    scrape_interval: 15s
+
+  tasks:
+    - name: Install Docker
+      ansible.builtin.import_tasks: tasks/docker-install.yml
+
+    - name: Deploy application files
+      ansible.builtin.import_tasks: tasks/deploy-files.yml
+
+    - name: Build, Network and Start Containers with Docker Compose
+      ansible.builtin.import_tasks: tasks/build-and-run.yml
+
+    - name: Validations
+      ansible.builtin.import_tasks: tasks/validate.yml
+

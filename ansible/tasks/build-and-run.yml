@@ -1,0 +1,18 @@
+- name: Build image service http-server-projeto-korp
+  community.docker.docker_image:
+    name: "{{ app_image }}"
+    source: build
+    build:
+      path: "{{ deploy_dir }}/app"
+    state: present
+
+- name: Create Network for Projeto Korp
+  community.docker.docker_network:
+    name: korp-network
+    driver: bridge
+    state: present
+
+- name: Build and Start Containers with Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ deploy_dir }}"
+    state: present

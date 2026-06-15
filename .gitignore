@@ -1,0 +1,39 @@
+# ===== Go =====
+# Binário compilado localmente (a imagem usa o binário gerado DENTRO do container).
+/app/http-server-projeto-korp
+*.exe
+*.test
+*.out
+# IMPORTANTE: go.mod e go.sum SÃO versionados (não entram aqui) — garantem
+# build reproduzível.
+
+# ===== Variáveis de ambiente / segredos =====
+.env
+*.env
+!*.example                           # Versionamos os templates de exemplo
+*.secret
+
+# ===== Ansible =====
+*.retry
+*.vault
+# Ignora variáveis sensíveis, mas mantém all.yml (desenvolvimento)
+ansible/group_vars/secrets.yml
+ansible/host_vars/
+ansible/vars/
+# Se um dia usar arquivos de senha do vault, ignore-os:
+vault_pass.txt
+
+# ===== Logs e temporários =====
+*.log
+tmp/
+*.tmp
+
+# ===== Editores / IDEs =====
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===== Sistema operacional =====
+.DS_Store
+Thumbs.db

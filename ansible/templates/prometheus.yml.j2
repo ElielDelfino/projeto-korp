@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+global:
+  scrape_interval: {{ scrape_interval | default('15s') }}
+  evaluation_interval: {{ scrape_interval | default('15s') }}
+
+scrape_configs:
+  - job_name: '{{ app_service_name }}'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['{{ app_service_name }}:{{ app_port }}']
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']

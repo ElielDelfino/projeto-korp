@@ -1,0 +1,11 @@
+---
+# Variáveis globais do projeto
+
+# Prometheus
+prometheus_admin_user: admin
+prometheus_admin_password: admin
+
+# Grafana
+grafana_admin_user: admin
+grafana_admin_password: admin
+grafana_allow_signup: false
