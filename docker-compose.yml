@@ -1,7 +1,10 @@
+name: projeto-korp
+
 services:
   http-server-projeto-korp:
     build: ./app
-    image: project-korp-app:latest
+    image: http-server-projeto-korp:latest
+    pull_policy: build
     container_name: http-server
     networks:
       - korp-network
@@ -20,7 +23,39 @@ services:
       - http-server-projeto-korp
     restart: unless-stopped
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    env_file:
+      - .env-prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - korp-network
+    restart: unless-stopped
+  
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    env_file:
+      - .env-grafana
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - korp-network
+    restart: unless-stopped
+
 networks:
   korp-network:
-    driver: bridge
+    name: korp-network
+    external: true
 
+volumes: 
+  prometheus-data:
+  grafana-data:
